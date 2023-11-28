@@ -1,0 +1,36 @@
+.content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.new-room{
+    display: flex;
+    gap: 10px;
+}
+
+.buttons{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap:10px;
+}
+
+.join{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content:center;
+    gap: 10px;
+}
+
+.create-btn {
+    width: 100%;
+}
+
+.create-btn:hover{
+    background-color: pink;
+}
+

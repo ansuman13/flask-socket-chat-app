@@ -2,11 +2,15 @@
 
 
 {% block content %}
+<h2>Chat room: {{room}}</h2>
+<div class="message-box" id="messages">
 
-<div class="message-box" id="messages"></div>
+</div>
+
 <div class="input">
     <input 
-    type="text" 
+    type="text"
+    rows="3"
     placeholder="Message" 
     name="message" 
     id="message"/>
@@ -16,9 +20,34 @@
 
 <script type="text/javascript">
     var socketio = io();
-    const sendMessage = () => {
-        console.log("send")
+    messages = document.getElementById('messages') 
+    createMessage = (name, msg) => {
+       const content = `
+       <div class="chat">
+            <span>
+                <strong>${name}</strong>: ${msg}
+            </span>
+            <span class="muted">
+                ${new Date().toLocaleString()}
+                </span>
+        </div>
+       `
+       messages.innerHTML +=  content
     }
+
+    const sendMessage = () => {
+        msg = document.getElementById('message')
+        if(msg.value == "") return 
+        socketio.send(msg.value)
+        msg.value = ""
+    }
+
+    socketio.on("message", (data) => {
+        createMessage(data.name, data.message)
+    })
+
+    
+
 </script>
 
 {% endblock %}

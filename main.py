@@ -64,10 +64,36 @@ def home():
 @app.route("/room")
 def room():
     room = session.get("room")
-    if room is not None or session.get("name") is None or room not in rooms:
+    if room is None or session.get("name") is None or room not in rooms:
         return redirect(url_for("home"))
 
-    return render_template("room.html")
+    return render_template("room.html", room=room)
+
+@socketio.on("connect")
+def connect():
+    room = session.get("room")
+    name = session.get("name")
+    join_room(room)
+    send({"name": name, "message": "has joined the room"}, to=room)
+    rooms[room]["members"] += 1
+    print(f"user {name} joined the Room {room}")
+    
+@socketio.on("disconnect")
+def disconnect():
+    room = session.get("room")
+    name = session.get("name")
+    leave_room(room)
+    
+    send({"name": name, "message": "has left the room"}, to=room)
+    rooms[room]["members"] += 1
+    print(f"user {name} left the Room {room}") 
+
+@socketio.on("message")
+def message(data):
+    room = session.get("room")
+    name = session.get("name")
+    print(data)
+    socketio.send({"name": name, "message": data}, to=room)
 
 if __name__ == "__main__":
     socketio.run(app,debug=True, port=8000)
